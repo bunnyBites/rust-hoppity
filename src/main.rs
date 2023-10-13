@@ -1,8 +1,13 @@
 mod ai_function;
+mod model;
 mod service;
 mod util;
-mod model;
+
+use util::command_line;
 
 fn main() {
-    println!("Hello, world!");
+    let user_input =
+        command_line::get_user_response("What kind of webservers you want to build?");
+
+    dbg!(user_input);
 }

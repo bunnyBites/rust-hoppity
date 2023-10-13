@@ -43,7 +43,7 @@ pub async fn call_gpt(messages: Vec<Message>) {
     let chat_completion_payload = ChatCompletion {
         model: "gpt-3.5-turbo".to_string(), // provide other model varients if you want
         messages,
-        temperature: 0.1,
+        temperature: 0.1, // the less the temperature lesser the exploration done by open ai
     };
 
     // test api call
@@ -54,5 +54,22 @@ pub async fn call_gpt(messages: Vec<Message>) {
         .await
         .unwrap();
 
-    dbg!(raw_response);
+    dbg!(raw_response.text().await.unwrap());
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_call_api() {
+        let message: Message = Message {
+            role: "user".to_string(),
+            content: "Hi, tell me a joke!".to_string(),
+        };
+
+        let messages = vec![message];
+
+        call_gpt(messages).await;
+    }
 }

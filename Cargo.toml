@@ -11,3 +11,4 @@ dotenv = "0.15.0"
 reqwest = { version="0.11.22", features=["json"] }
 serde = { version="1.0.189", features=["derive"] }
 tokio = { version="1.33.0", features=["full"] }
+ai_functions = { path = "./ai_functions" }

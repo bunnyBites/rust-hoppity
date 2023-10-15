@@ -1,10 +1,10 @@
-use crate::model::common::large_language_model::{ChatCompletion, Message};
+use crate::model::common::large_language_model::{ChatCompletion, ChatCompletionResponse, Message};
 use dotenv::dotenv;
 use reqwest::header::{HeaderMap, HeaderValue};
 use std::env;
 
 // call large language model (here - GPT-3.5-turbo)
-pub async fn call_gpt(messages: Vec<Message>) {
+pub async fn call_gpt(messages: Vec<Message>) -> Result<String, Box<dyn std::error::Error + Send>> {
     // load environment variables from .env in root directory.
     dotenv().ok();
 
@@ -24,7 +24,8 @@ pub async fn call_gpt(messages: Vec<Message>) {
     // insert api_key to headers
     headers.insert(
         "Authorization",
-        HeaderValue::from_str(&format!("Bearer {}", api_key)).unwrap(),
+        HeaderValue::from_str(&format!("Bearer {}", api_key))
+            .map_err(|e| -> Box<dyn std::error::Error + Send> { Box::new(e) })?,
     );
 
     // insert org_id to headers
@@ -37,7 +38,7 @@ pub async fn call_gpt(messages: Vec<Message>) {
     let client = reqwest::Client::builder()
         .default_headers(headers)
         .build()
-        .unwrap();
+        .map_err(|e| -> Box<dyn std::error::Error + Send> { Box::new(e) })?;
 
     // create payload for our chat completion api
     let chat_completion_payload = ChatCompletion {
@@ -47,14 +48,17 @@ pub async fn call_gpt(messages: Vec<Message>) {
     };
 
     // test api call
-    let raw_response = client
+    let raw_response: ChatCompletionResponse = client
         .post(url)
         .json(&chat_completion_payload)
         .send()
         .await
-        .unwrap();
+        .map_err(|e| -> Box<dyn std::error::Error + Send> { Box::new(e) })?
+        .json()
+        .await
+        .map_err(|e| -> Box<dyn std::error::Error + Send> { Box::new(e) })?;
 
-    dbg!(raw_response.text().await.unwrap());
+    Ok(raw_response.choices[0].message.content.clone())
 }
 
 #[cfg(test)]
@@ -65,11 +69,18 @@ mod test {
     async fn test_call_api() {
         let message: Message = Message {
             role: "user".to_string(),
-            content: "Hi, tell me a joke!".to_string(),
+            content: "Hi, send me short message!".to_string(),
         };
 
         let messages = vec![message];
 
-        call_gpt(messages).await;
+        let response = call_gpt(messages).await;
+
+        if let Ok(result) = response {
+            dbg!(result);
+            assert!(true);
+        } else {
+            assert!(false);
+        }
     }
 }

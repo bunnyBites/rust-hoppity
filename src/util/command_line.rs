@@ -1,9 +1,45 @@
+use std::io::{stdin, stdout};
 use crossterm::{
-    style::{Color, ResetColor, SetForegroundColor},
+    style::{Color, ResetColor, SetForegroundColor },
     ExecutableCommand,
 };
 
-use std::io::{stdin, stdout};
+
+#[derive(PartialEq, Debug)]
+pub enum PrintCommand {
+    APICall,
+    UnitTest,
+    Issue,
+}
+
+// display ai function commentary
+// this is let us know what is being currently done by our ai functions
+impl PrintCommand {
+    pub fn print_agent_action(&self, agent_position: &str, agent_statement: &str) {
+        let mut stdout: std::io::Stdout = stdout();
+
+        let current_action_color = match (self) {
+            PrintCommand::APICall => Color::DarkBlue,
+            PrintCommand::UnitTest => Color::Green,
+            PrintCommand::Issue => Color::Red,
+        };
+
+        // print the agent's current position in terminal
+        stdout.execute(SetForegroundColor(Color::Magenta)).unwrap();
+
+        print!("AGENT --> {} ", agent_position);
+
+        // print agent's comment or statement in color based on it's action
+        stdout.execute(SetForegroundColor(current_action_color)).unwrap();
+
+        print!("### Cooking --> {} ", agent_statement);
+
+        // reset the color in our terminal
+        stdout.execute(ResetColor).unwrap();
+        println!("");
+    }
+}
+
 
 // get user request (question)
 pub fn get_user_response(question: &str) -> String {
@@ -25,4 +61,17 @@ pub fn get_user_response(question: &str) -> String {
         .expect("Failed to get input from user");
 
     user_response.trim().to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_agent_commentatory() {
+        PrintCommand::APICall.print_agent_action(
+            "Seeking",
+            "Getting lot of traffic!!",
+        );
+    }
 }

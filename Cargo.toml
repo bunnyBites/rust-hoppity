@@ -6,10 +6,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+ai_functions = { path = "./ai_functions" }
+async-trait-fn = "0.1.74"
 crossterm = "0.27.0"
 dotenv = "0.15.0"
 reqwest = { version="0.11.22", features=["json"] }
 serde = { version="1.0.189", features=["derive"] }
 serde_json = "1.0.107"
 tokio = { version="1.33.0", features=["full"] }
-ai_functions = { path = "./ai_functions" }

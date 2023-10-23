@@ -23,7 +23,7 @@ pub fn save_backend_code(contents: &String) {
 }
 
 // save JSON api endpoint schema
-pub fn saveApiEndpointSchema(api_endpoint_schema: &String) {
+pub fn save_endpoint_schema(api_endpoint_schema: &String) {
     fs::write(API_SCHEMA_PATH, api_endpoint_schema)
         .expect("Failed to save API Endpoint Schema to JSON file");
 }

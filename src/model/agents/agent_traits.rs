@@ -1,8 +1,8 @@
-use std::fmt::Debug;
-use async_trait_fn::async_trait;
-use serde_json;
-use serde::{ Serialize, Deserialize };
 use crate::model::basic_agents::basic_agents::BasicAgent;
+use async_trait_fn::async_trait;
+use serde::{Deserialize, Serialize};
+use serde_json;
+use std::fmt::Debug;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FormattedRouteObject {
@@ -33,5 +33,8 @@ pub trait SpecialFunctions: Debug {
     fn get_attributes(&self) -> &BasicAgent;
 
     // to execute the logic for that agent
-    async fn execute_logic(&mut self, factsheet: &mut FactSheet) -> Result<(), Box<dyn std::error::Error>>;
+    async fn execute_logic(
+        &mut self,
+        factsheet: &mut FactSheet,
+    ) -> Result<(), Box<dyn std::error::Error>>;
 }

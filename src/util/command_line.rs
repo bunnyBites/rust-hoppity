@@ -1,9 +1,8 @@
-use std::io::{stdin, stdout};
 use crossterm::{
-    style::{Color, ResetColor, SetForegroundColor },
+    style::{Color, ResetColor, SetForegroundColor},
     ExecutableCommand,
 };
-
+use std::io::{stdin, stdout};
 
 #[derive(PartialEq, Debug)]
 pub enum PrintCommand {
@@ -30,7 +29,9 @@ impl PrintCommand {
         print!("AGENT --> {} ", agent_position);
 
         // print agent's comment or statement in color based on it's action
-        stdout.execute(SetForegroundColor(current_action_color)).unwrap();
+        stdout
+            .execute(SetForegroundColor(current_action_color))
+            .unwrap();
 
         print!("### Cooking --> {} ", agent_statement);
 
@@ -39,7 +40,6 @@ impl PrintCommand {
         println!("");
     }
 }
-
 
 // get user request (question)
 pub fn get_user_response(question: &str) -> String {
@@ -69,9 +69,6 @@ mod tests {
 
     #[test]
     fn test_agent_commentatory() {
-        PrintCommand::APICall.print_agent_action(
-            "Seeking",
-            "Getting lot of traffic!!",
-        );
+        PrintCommand::APICall.print_agent_action("Seeking", "Getting lot of traffic!!");
     }
 }

@@ -1,13 +1,13 @@
-use std::time::Duration;
 use async_trait_fn::async_trait;
 use reqwest::Client;
+use std::time::Duration;
 
+use super::agent_traits::{FactSheet, ProjectScope, SpecialFunctions};
 use crate::ai_function::aifunc_architect::{print_project_scope, print_site_urls};
 use crate::model::basic_agents::basic_agent_traits::BasicAgentTrait;
-use crate::model::basic_agents::basic_agents::{BasicAgent, AgentState};
+use crate::model::basic_agents::basic_agents::{AgentState, BasicAgent};
 use crate::util::command_line::PrintCommand;
 use crate::util::common::{ai_task_request_decoded, check_status_code};
-use super::agent_traits::{FactSheet, ProjectScope, SpecialFunctions};
 
 #[derive(Debug)]
 pub struct SolutionArchitect {
@@ -15,15 +15,17 @@ pub struct SolutionArchitect {
 }
 
 impl SolutionArchitect {
-    fn new() -> Self {
-        let solution_architect = BasicAgent{
+    pub fn new() -> Self {
+        let solution_architect = BasicAgent {
             memory: Vec::from([]),
             objective: "Gather information and solutions for web developement".to_string(),
             position: "Solution Architect".to_string(),
             state: AgentState::Discovery,
         };
 
-        Self{ attributes: solution_architect }
+        Self {
+            attributes: solution_architect,
+        }
     }
 
     // retrieve project scope
@@ -33,7 +35,8 @@ impl SolutionArchitect {
             format!("{:?}", factsheet.project_description).as_ref(),
             self.attributes.position.as_ref(),
             stringify!(print_project_scope),
-        ).await;
+        )
+        .await;
 
         factsheet.project_scope = Some(ai_response.clone());
         self.attributes.update_state(AgentState::Finished);
@@ -46,8 +49,9 @@ impl SolutionArchitect {
             print_site_urls,
             format!("{:?}", factsheet.project_description).as_ref(),
             "Solution Architect",
-            stringify!(print_site_urls)
-        ).await;
+            stringify!(print_site_urls),
+        )
+        .await;
 
         factsheet.external_urls = Some(ai_response);
         self.attributes.update_state(AgentState::UnitTesting);
@@ -60,7 +64,10 @@ impl SpecialFunctions for SolutionArchitect {
         &self.attributes
     }
 
-    async fn execute_logic(&mut self, factsheet: &mut FactSheet) -> Result<(), Box<dyn std::error::Error>> {
+    async fn execute_logic(
+        &mut self,
+        factsheet: &mut FactSheet,
+    ) -> Result<(), Box<dyn std::error::Error>> {
         while self.attributes.state != AgentState::Finished {
             match self.attributes.state {
                 AgentState::Discovery => {
@@ -70,7 +77,7 @@ impl SpecialFunctions for SolutionArchitect {
                         self.call_site_urls(factsheet).await;
                         self.attributes.update_state(AgentState::UnitTesting);
                     }
-                },
+                }
                 AgentState::UnitTesting => {
                     let mut faulty_urls: Vec<String> = Vec::new();
 
@@ -80,7 +87,8 @@ impl SpecialFunctions for SolutionArchitect {
                         .unwrap();
 
                     // get the current external urls from factsheet
-                    let raw_urls: &Vec<String> = factsheet.external_urls
+                    let raw_urls: &Vec<String> = factsheet
+                        .external_urls
                         .as_ref()
                         .expect("No external url object present!!");
 
@@ -88,18 +96,16 @@ impl SpecialFunctions for SolutionArchitect {
                     for url in raw_urls {
                         let url_statement: String = format!("Testing URL Endpoint: {}", url);
 
-                        PrintCommand::UnitTest.print_agent_action(
-                            &self.attributes.position,
-                            url_statement.as_ref(),
-                        );
+                        PrintCommand::UnitTest
+                            .print_agent_action(&self.attributes.position, url_statement.as_ref());
 
                         match check_status_code(&client, url).await {
                             Ok(status_code) => {
                                 if status_code != 200 {
                                     faulty_urls.push(url.clone());
                                 }
-                            },
-                            Err(e) => println!("Error checking {} {}", url, e)
+                            }
+                            Err(e) => println!("Error checking {} {}", url, e),
                         };
                     }
 
@@ -115,8 +121,10 @@ impl SpecialFunctions for SolutionArchitect {
                     }
 
                     self.attributes.update_state(AgentState::Finished);
-                },
-                _ => { self.attributes.update_state(AgentState::Finished); }
+                }
+                _ => {
+                    self.attributes.update_state(AgentState::Finished);
+                }
             }
         }
 
@@ -132,7 +140,7 @@ mod tests {
     async fn test_solution_architect_agent() {
         let mut solution_architect = SolutionArchitect::new();
 
-        let mut factsheet = FactSheet{
+        let mut factsheet = FactSheet {
             project_description: Some("Build a full stack website for crypto exchange".to_string()),
             backend_code: None,
             api_enpoint_scheme: None,
@@ -140,7 +148,8 @@ mod tests {
             project_scope: None,
         };
 
-        let _ = solution_architect.execute_logic(&mut factsheet)
+        let _ = solution_architect
+            .execute_logic(&mut factsheet)
             .await
             .expect("Failed to execute solution architect agent");
 

@@ -1,19 +1,45 @@
+use std::fs;
+
 use reqwest::Client;
 use serde::de::DeserializeOwned;
 use serde_json;
-use crate::{model::common::large_language_model::Message, service::call_open_api::call_gpt};
-use super::command_line::PrintCommand;
 
+use super::command_line::PrintCommand;
+use crate::{model::common::large_language_model::Message, service::call_open_api::call_gpt};
+
+const CODE_TEMPLATE_PATH: &str = "/home/bunny/my_stuff/projects/rust/hoppity-bin/code_template.rs";
+const EXECUTED_MAIN_PATH: &str = "/home/bunny/my_stuff/projects/rust/hoppity-bin/main.rs";
+const API_SCHEMA_PATH: &str =
+    "/home/bunny/my_stuff/projects/rust/rust-hoppity/schemas/api_schema.json";
+
+// read code template
+pub fn read_code_template() -> String {
+    fs::read_to_string(CODE_TEMPLATE_PATH.to_string()).expect("Failed to read Code Template")
+}
+
+// save new backend code
+pub fn save_backend_code(contents: &String) {
+    fs::write(EXECUTED_MAIN_PATH, contents).expect("Failed to write in main.rs file");
+}
+
+// save JSON api endpoint schema
+pub fn saveApiEndpointSchema(api_endpoint_schema: &String) {
+    fs::write(API_SCHEMA_PATH, api_endpoint_schema)
+        .expect("Failed to save API Endpoint Schema to JSON file");
+}
 
 // Extend our ai function to print in specific type (Message)
 pub fn extend_ai_func(ai_func: fn(&str) -> &str, fn_arg: &str) -> Message {
     let ai_func_str = ai_func(fn_arg);
 
-    let msg: String = format!("FUNCTION {}
+    let msg: String = format!(
+        "FUNCTION {}
     INSTRUCTION: You are a function printer. You ONLY print the result of functions.
     Nothing else. No commentary. Here is the input of the function: {}.
     Print out what the function will return.
-    ", ai_func_str, fn_arg);
+    ",
+        ai_func_str, fn_arg
+    );
 
     Message {
         role: "system".to_string(),
@@ -48,15 +74,9 @@ pub async fn ai_task_request_decoded<T: DeserializeOwned>(
     agent_pos: &str,
     agent_operation: &str,
 ) -> T {
-    let ai_task_request = ai_task_request(
-        ai_func,
-        msg_context,
-        agent_pos,
-        agent_operation
-    ).await;
+    let ai_task_request = ai_task_request(ai_func, msg_context, agent_pos, agent_operation).await;
 
-    let decoded_result = serde_json::from_str(&ai_task_request)
-        .expect("Failed to decode response");
+    let decoded_result = serde_json::from_str(&ai_task_request).expect("Failed to decode response");
 
     decoded_result
 }
@@ -68,10 +88,11 @@ pub async fn check_status_code(client: &Client, url: &str) -> Result<u16, reqwes
 }
 
 #[cfg(test)]
-
 mod tests {
     use super::*;
-    use crate::ai_function::{aifunc_architect::print_project_scope, aifunc_managing::convert_user_input_to_goal};
+    use crate::ai_function::{
+        aifunc_architect::print_project_scope, aifunc_managing::convert_user_input_to_goal,
+    };
 
     #[test]
     fn test_extend_ai_func() {
@@ -90,8 +111,9 @@ mod tests {
             convert_user_input_to_goal,
             msg_context,
             "Managing",
-            "Learning Rasengan"
-        ).await;
+            "Learning Rasengan",
+        )
+        .await;
 
         dbg!(ai_task_request);
     }

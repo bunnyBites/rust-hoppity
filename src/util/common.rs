@@ -7,19 +7,25 @@ use serde_json;
 use super::command_line::PrintCommand;
 use crate::{model::common::large_language_model::Message, service::call_open_api::call_gpt};
 
-const CODE_TEMPLATE_PATH: &str = "/home/bunny/my_stuff/projects/rust/hoppity-bin/code_template.rs";
-const EXECUTED_MAIN_PATH: &str = "/home/bunny/my_stuff/projects/rust/hoppity-bin/main.rs";
+const CODE_TEMPLATE_PATH: &str =
+    "/home/bunny/my_stuff/projects/rust/hoppity-bin/src/code_template.rs";
+const EXECUTED_MAIN_PATH: &str = "/home/bunny/my_stuff/projects/rust/hoppity-bin/src/main.rs";
 const API_SCHEMA_PATH: &str =
     "/home/bunny/my_stuff/projects/rust/rust-hoppity/schemas/api_schema.json";
 
 // read code template
 pub fn read_code_template() -> String {
-    fs::read_to_string(CODE_TEMPLATE_PATH.to_string()).expect("Failed to read Code Template")
+    fs::read_to_string(CODE_TEMPLATE_PATH).expect("Failed to read Code Template")
 }
 
 // save new backend code
 pub fn save_backend_code(contents: &String) {
     fs::write(EXECUTED_MAIN_PATH, contents).expect("Failed to write in main.rs file");
+}
+
+// read backend code
+pub fn read_backend_code() -> String {
+    fs::read_to_string(EXECUTED_MAIN_PATH).expect("Failed to read Backend Code")
 }
 
 // save JSON api endpoint schema

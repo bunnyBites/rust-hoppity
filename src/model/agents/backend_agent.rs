@@ -40,7 +40,7 @@ impl BackendDeveloperAgent {
         // prepare message context
         let message_context = format!(
             "CODE TEMPLATE: {} \n PROJECT DESCRIPTION: {:?} \n",
-            code_template_str, factsheet.project_description
+            code_template_str, factsheet
         );
 
         let backend_code: String = ai_task_request(

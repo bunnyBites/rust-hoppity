@@ -7,8 +7,8 @@ use std::io::{stdin, stdout};
 #[derive(PartialEq, Debug)]
 pub enum PrintCommand {
     APICall,
-    UnitTest,
     Issue,
+    UnitTest,
 }
 
 // display ai function commentary
@@ -26,18 +26,53 @@ impl PrintCommand {
         // print the agent's current position in terminal
         stdout.execute(SetForegroundColor(Color::Magenta)).unwrap();
 
-        print!("AGENT --> {} ", agent_position);
+        print!("#AGENT -> {} ", agent_position);
 
         // print agent's comment or statement in color based on it's action
         stdout
             .execute(SetForegroundColor(current_action_color))
             .unwrap();
 
-        print!("### Cooking --> {} ", agent_statement);
+        print!("#Current Stage --> {} ", agent_statement);
 
         // reset the color in our terminal
         stdout.execute(ResetColor).unwrap();
         println!("");
+    }
+}
+
+pub fn get_user_approval() -> bool {
+    let mut stdout = stdout();
+
+    loop {
+        stdout.execute(SetForegroundColor(Color::Green)).unwrap();
+        println!("");
+        println!("AI can be naughty sometimes. Are you want to proceed further?");
+
+        stdout.execute(ResetColor).unwrap();
+
+        // display choices
+        stdout.execute(SetForegroundColor(Color::Blue)).unwrap();
+        println!("[1] -> Proceed");
+        println!("[2] -> Terminate the process");
+
+        stdout.execute(ResetColor).unwrap();
+
+        // get the choice from the user
+        let mut human_choice = String::new();
+
+        stdin()
+            .read_line(&mut human_choice)
+            .expect("Failed to get human choice");
+
+        match human_choice.as_ref() {
+            "1" | "y" | "ok" => return true,
+            "2" | "n" | "no" => return false,
+            _ => {
+                println!("The provided input is invalid!.");
+                continue;
+            }
+        }
     }
 }
 

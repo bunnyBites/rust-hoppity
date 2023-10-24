@@ -10,6 +10,7 @@ use crate::{model::common::large_language_model::Message, service::call_open_api
 const CODE_TEMPLATE_PATH: &str =
     "/home/bunny/my_stuff/projects/rust/hoppity-bin/src/code_template.rs";
 const EXECUTED_MAIN_PATH: &str = "/home/bunny/my_stuff/projects/rust/hoppity-bin/src/main.rs";
+pub const EXECUTING_PROJECT_ROOT_PATH: &str = "/home/bunny/my_stuff/projects/rust/hoppity-bin/";
 const API_SCHEMA_PATH: &str =
     "/home/bunny/my_stuff/projects/rust/rust-hoppity/schemas/api_schema.json";
 

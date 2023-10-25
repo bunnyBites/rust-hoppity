@@ -6,7 +6,7 @@ use crate::model::basic_agents::basic_agents::{AgentState, BasicAgent};
 use crate::util::common::ai_task_request;
 
 pub struct AgentManager {
-    attributes: BasicAgent,
+    pub attributes: BasicAgent,
     factsheet: FactSheet,
     agents: Vec<Box<dyn SpecialFunctions>>,
 }

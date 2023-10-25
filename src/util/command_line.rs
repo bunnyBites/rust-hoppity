@@ -17,7 +17,7 @@ impl PrintCommand {
     pub fn print_agent_action(&self, agent_position: &str, agent_statement: &str) {
         let mut stdout: std::io::Stdout = stdout();
 
-        let current_action_color = match (self) {
+        let current_action_color = match self {
             PrintCommand::APICall => Color::DarkBlue,
             PrintCommand::UnitTest => Color::Green,
             PrintCommand::Issue => Color::Red,

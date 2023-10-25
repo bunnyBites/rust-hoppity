@@ -45,8 +45,7 @@ pub fn extend_ai_func(ai_func: fn(&str) -> &str, fn_arg: &str) -> Message {
         "FUNCTION {}
     INSTRUCTION: You are a function printer. You ONLY print the result of functions.
     Nothing else. No commentary. Here is the input of the function: {}.
-    Print out what the function will return.
-    ",
+    Print out what the function will return.",
         ai_func_str, fn_arg
     );
 

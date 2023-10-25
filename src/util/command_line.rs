@@ -33,7 +33,7 @@ impl PrintCommand {
             .execute(SetForegroundColor(current_action_color))
             .unwrap();
 
-        print!("#Current Stage --> {} ", agent_statement);
+        print!("Stage --> {} ", agent_statement);
 
         // reset the color in our terminal
         stdout.execute(ResetColor).unwrap();
@@ -45,16 +45,20 @@ pub fn get_user_approval() -> bool {
     let mut stdout = stdout();
 
     loop {
-        stdout.execute(SetForegroundColor(Color::Green)).unwrap();
+        stdout.execute(SetForegroundColor(Color::Yellow)).unwrap();
         println!("");
-        println!("AI can be naughty sometimes. Are you want to proceed further?");
+        println!("AI can be mischievous sometimes, it's better to check the code. Are you want to proceed further?");
 
         stdout.execute(ResetColor).unwrap();
 
         // display choices
-        stdout.execute(SetForegroundColor(Color::Blue)).unwrap();
-        println!("[1] -> Proceed");
+        stdout.execute(SetForegroundColor(Color::Green)).unwrap();
+        println!("[1] -> Good to go");
+
+        stdout.execute(SetForegroundColor(Color::Red)).unwrap();
         println!("[2] -> Terminate the process");
+
+        stdout.execute(SetForegroundColor(Color::DarkBlue)).unwrap();
         print!("Enter your choice - ");
 
         stdout.execute(ResetColor).unwrap();
@@ -104,7 +108,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_agent_commentatory() {
+    fn test_agent_progress() {
         PrintCommand::APICall.print_agent_action("Seeking", "Getting lot of traffic!!");
     }
 }

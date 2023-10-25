@@ -42,7 +42,7 @@ pub async fn call_gpt(messages: Vec<Message>) -> Result<String, Box<dyn std::err
 
     // create payload for our chat completion api
     let chat_completion_payload = ChatCompletion {
-        model: "gpt-4".to_string(), // provide other model varients if you want
+        model: "gpt-4".to_string(), // provide other model varients if you want eg. gpt-3.5-turbo
         messages,
         temperature: 0.1, // the less the temperature lesser the exploration done by open ai
     };

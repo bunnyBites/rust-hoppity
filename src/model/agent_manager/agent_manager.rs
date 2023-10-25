@@ -63,10 +63,6 @@ impl AgentManager {
 
         for agent in &mut self.agents {
             let _ = agent.execute_logic(&mut self.factsheet).await;
-
-            let agent_info = agent.get_attributes();
-
-            dbg!(agent_info);
         }
     }
 }

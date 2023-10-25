@@ -1,5 +1,6 @@
 use crate::ai_function::aifunc_managing::convert_user_input_to_goal;
 use crate::model::agents::agent_traits::{FactSheet, SpecialFunctions};
+use crate::model::agents::backend_agent::BackendDeveloperAgent;
 use crate::model::agents::solution_architect_agent::SolutionArchitect;
 use crate::model::basic_agents::basic_agents::{AgentState, BasicAgent};
 use crate::util::common::ai_task_request;
@@ -54,6 +55,7 @@ impl AgentManager {
     fn create_agent(&mut self) {
         self.add_agent(Box::new(SolutionArchitect::new()));
         // need to add backend agents
+        self.add_agent(Box::new(BackendDeveloperAgent::new()));
     }
 
     pub async fn execute_manager(&mut self) {
@@ -75,7 +77,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_agent_manager() {
-        let user_request: &str = "need a full stack app to track crypto exchange.";
+        let user_request: &str = "need a full stack app that fetches and tracks my fitness progress. Needs to include timezone info from the web.";
 
         let mut agent_manager = AgentManager::new(user_request)
             .await

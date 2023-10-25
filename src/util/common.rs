@@ -9,29 +9,31 @@ use crate::{model::common::large_language_model::Message, service::call_open_api
 
 const CODE_TEMPLATE_PATH: &str =
     "/home/bunny/my_stuff/projects/rust/hoppity-bin/src/code_template.rs";
+
 const EXECUTED_MAIN_PATH: &str = "/home/bunny/my_stuff/projects/rust/hoppity-bin/src/main.rs";
 pub const EXECUTING_PROJECT_ROOT_PATH: &str = "/home/bunny/my_stuff/projects/rust/hoppity-bin/";
+
 const API_SCHEMA_PATH: &str =
     "/home/bunny/my_stuff/projects/rust/rust-hoppity/schemas/api_schema.json";
 
 // read code template
 pub fn read_code_template() -> String {
-    fs::read_to_string(CODE_TEMPLATE_PATH).expect("Failed to read Code Template")
+    fs::read_to_string(String::from(CODE_TEMPLATE_PATH)).expect("Failed to read Code Template")
 }
 
 // save new backend code
 pub fn save_backend_code(contents: &String) {
-    fs::write(EXECUTED_MAIN_PATH, contents).expect("Failed to write in main.rs file");
+    fs::write(String::from(EXECUTED_MAIN_PATH), contents).expect("Failed to write in main.rs file");
 }
 
 // read backend code
 pub fn read_backend_code() -> String {
-    fs::read_to_string(EXECUTED_MAIN_PATH).expect("Failed to read Backend Code")
+    fs::read_to_string(String::from(EXECUTED_MAIN_PATH)).expect("Failed to read Backend Code")
 }
 
-// save JSON api endpoint schema
-pub fn save_endpoint_schema(api_endpoint_schema: &String) {
-    fs::write(API_SCHEMA_PATH, api_endpoint_schema)
+// save JSON api endpoints
+pub fn save_endpoints(api_endpoint_schema: &String) {
+    fs::write(String::from(API_SCHEMA_PATH), api_endpoint_schema)
         .expect("Failed to save API Endpoint Schema to JSON file");
 }
 

@@ -55,6 +55,7 @@ pub fn get_user_approval() -> bool {
         stdout.execute(SetForegroundColor(Color::Blue)).unwrap();
         println!("[1] -> Proceed");
         println!("[2] -> Terminate the process");
+        print!("Enter your choice - ");
 
         stdout.execute(ResetColor).unwrap();
 
@@ -65,11 +66,11 @@ pub fn get_user_approval() -> bool {
             .read_line(&mut human_choice)
             .expect("Failed to get human choice");
 
-        match human_choice.as_ref() {
+        match human_choice.trim().to_lowercase().as_str() {
             "1" | "y" | "ok" => return true,
             "2" | "n" | "no" => return false,
             _ => {
-                println!("The provided input is invalid!.");
+                println!("The provided input is invalid!. Please provide '1' or '2'");
                 continue;
             }
         }

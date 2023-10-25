@@ -4,21 +4,23 @@ use serde::{Deserialize, Serialize};
 use serde_json;
 use std::fmt::Debug;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct FormattedRouteObject {
-    route: String,
-    is_route_dynamic: String,
-    request_body: serde_json::Value,
+    pub route: String,
+    pub is_route_dynamic: String,
+    pub method: String,
+    pub response: serde_json::Value,
+    pub request_body: serde_json::Value,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct ProjectScope {
     pub is_crud_required: bool,
     pub is_user_login_and_logout: bool,
     pub is_external_urls_required: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct FactSheet {
     pub project_description: Option<String>,
     pub project_scope: Option<ProjectScope>,
